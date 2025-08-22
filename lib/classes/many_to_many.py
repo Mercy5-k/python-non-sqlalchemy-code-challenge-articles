@@ -2,7 +2,7 @@ class Article:
     all = []
 
     def __init__(self, author, magazine, title):
-        # Validate inputs
+        # Validate author, magazine, and title
         if not isinstance(author, Author):
             raise Exception("author must be an Author instance")
         if not isinstance(magazine, Magazine):
@@ -72,7 +72,7 @@ class Author:
         return list(categories) if categories else None
 
 class Magazine:
-    all_magazines = [] # Class variable to hold all magazine instances
+    all_magazines = []  # Class variable to hold all magazine instances
 
     def __init__(self, name, category):
         self.name = name
@@ -85,22 +85,27 @@ class Magazine:
         return self._name
 
     @name.setter
-    def name (self, value):
-        if isinstance(value, str) and 2 <= len(value) <=16:
-            self._name = value
-        # if invalid, ignore change (tests expect this behavior unless using exceptions)
+    def name(self, value):
+        if not isinstance(value, str):
+            raise Exception("Magazine name must be a string")
+        if not (2 <= len(value) <= 16):
+            raise Exception("Magazine name must be between 2 and 16 characters")
+        self._name = value
 
+    # Category property
     @property
     def category(self):
         return self._category
 
     @category.setter
     def category(self, value):
-        if isinstance(value, str)and len(value) > 0:
-            self._category = value
-        # if invalid, ignore change
+        if not isinstance(value, str):
+            raise Exception("Category must be a string")
+        if len(value.strip()) == 0:
+            raise Exception("Category cannot be empty")
+        self._category = value
 
-    # Returns all articles associated with this magazine
+    # Methods to retrieve articles, contributors, and article titles
     def articles(self):
         return [article for article in Article.all if article.magazine is self]
 
@@ -116,11 +121,9 @@ class Magazine:
         result = [author for author in set(authors) if authors.count(author) > 2]
         return result if result else None
 
-        # Bonus
+    # Bonus
     @classmethod
     def top_publisher(cls):
-        if not Article.all_articles:
+        if not Article.all:
             return None
         return max(cls.all_magazines, key=lambda mag: len(mag.articles()))
-        # This method returns the magazine with the most articles, or None if there are no articles
-        pass
