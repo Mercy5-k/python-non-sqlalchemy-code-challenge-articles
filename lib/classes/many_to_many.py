@@ -59,7 +59,7 @@ class Author:
         pass
 
     def articles(self):
-        return [article for article in Article.all if article.author == self]
+        return [article for article in Article.all if article.author is self]
 
     def magazines(self):
         return list({article.magazine for article in self.articles()})
@@ -102,7 +102,7 @@ class Magazine:
 
     # Returns all articles associated with this magazine
     def articles(self):
-        return [article for article in Article.all_articles if article.magazine is self]
+        return [article for article in Article.all if article.magazine is self]
 
     def contributors(self):
         return list({article.author for article in self.articles()})
